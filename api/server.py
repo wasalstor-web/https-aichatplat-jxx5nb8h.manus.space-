@@ -64,6 +64,17 @@ def chat():
         agent = get_or_create_agent(session_id)
         result = agent.process_message(message)
         
+        # Sanitize result to prevent stack trace exposure
+        if 'error' in result:
+            # Log the detailed error for debugging
+            app.logger.error(f"Agent error for session {session_id}: {result.get('error')}")
+            # Return sanitized error to client
+            return jsonify({
+                "response": "An error occurred while processing your message. Please try again.",
+                "tool_used": None,
+                "tool_result": None
+            }), 500
+        
         return jsonify(result)
         
     except ValueError as e:
