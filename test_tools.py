@@ -5,6 +5,7 @@ Tests each tool independently without requiring API key.
 
 import sys
 import os
+import tempfile
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +26,7 @@ def test_run_shell():
     print(f"Output: {result['output'].strip()}")
     print(f"Return code: {result['returncode']}")
     
-    assert result['success'] == True, "Shell command should succeed"
+    assert result['success'], "Shell command should succeed"
     assert "Hello from shell!" in result['output'], "Output should contain expected text"
     
     print("✓ run_shell test passed!")
@@ -37,8 +38,10 @@ def test_write_to_file():
     print("Testing write_to_file tool")
     print("=" * 60)
     
-    # Test writing to a file
-    test_file = "/tmp/test_agent_file.txt"
+    # Test writing to a file using cross-platform temp file
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp_file:
+        test_file = tmp_file.name
+    
     test_content = "This is a test file created by the AI Agent!"
     
     result = write_to_file(test_file, test_content)
@@ -47,7 +50,7 @@ def test_write_to_file():
     print(f"Bytes written: {result.get('bytes_written', 0)}")
     
     # Verify file was created
-    assert result['success'] == True, "Write operation should succeed"
+    assert result['success'], "Write operation should succeed"
     assert os.path.exists(test_file), "File should exist"
     
     with open(test_file, 'r') as f:
