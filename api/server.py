@@ -3,6 +3,12 @@ Flask API server for the AI Agent.
 Provides REST endpoints for interacting with the agent.
 """
 
+import sys
+from pathlib import Path
+
+# Add parent directory to Python path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
