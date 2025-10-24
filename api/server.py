@@ -75,7 +75,16 @@ def chat():
                 "tool_result": None
             }), 500
         
-        return jsonify(result)
+        # Only return safe fields to prevent any potential information leakage
+        safe_result = {
+            "response": result.get("response", ""),
+            "tool_used": result.get("tool_used"),
+            "tool_result": result.get("tool_result")
+        }
+        if "tool_reasoning" in result:
+            safe_result["tool_reasoning"] = result["tool_reasoning"]
+        
+        return jsonify(safe_result)
         
     except ValueError as e:
         # Log the error for debugging (in production, use proper logging)
