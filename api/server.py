@@ -67,12 +67,16 @@ def chat():
         return jsonify(result)
         
     except ValueError as e:
+        # Log the error for debugging (in production, use proper logging)
+        app.logger.error(f"ValueError in chat endpoint: {str(e)}")
         return jsonify({
-            "error": str(e)
+            "error": "Invalid input provided"
         }), 400
     except Exception as e:
+        # Log the full error for debugging (in production, use proper logging)
+        app.logger.error(f"Exception in chat endpoint: {str(e)}")
         return jsonify({
-            "error": f"Internal server error: {str(e)}"
+            "error": "An internal error occurred while processing your request"
         }), 500
 
 
@@ -103,8 +107,9 @@ def reset_conversation():
             })
             
     except Exception as e:
+        app.logger.error(f"Exception in reset endpoint: {str(e)}")
         return jsonify({
-            "error": f"Internal server error: {str(e)}"
+            "error": "An internal error occurred while resetting the conversation"
         }), 500
 
 
@@ -117,8 +122,9 @@ def list_tools():
             "tools": list(tools.values())
         })
     except Exception as e:
+        app.logger.error(f"Exception in tools endpoint: {str(e)}")
         return jsonify({
-            "error": f"Internal server error: {str(e)}"
+            "error": "An internal error occurred while listing tools"
         }), 500
 
 
@@ -146,8 +152,9 @@ def get_history():
             })
             
     except Exception as e:
+        app.logger.error(f"Exception in history endpoint: {str(e)}")
         return jsonify({
-            "error": f"Internal server error: {str(e)}"
+            "error": "An internal error occurred while retrieving conversation history"
         }), 500
 
 
